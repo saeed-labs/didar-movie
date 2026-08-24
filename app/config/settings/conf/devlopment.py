@@ -2,11 +2,11 @@ from .paths import BASE_DIR
 
 
 STATIC_URL = "/assets/static/"
-STATIC_ROOT = BASE_DIR / "assets" / "static/"
+STATIC_ROOT = BASE_DIR.parent / "volumes" / "assets" / "static/"
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / '/media'
+MEDIA_ROOT = BASE_DIR.parent / 'volumes' / 'media'
 
 #
 #
