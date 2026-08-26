@@ -39,6 +39,12 @@ services:
       - app
 
     volumes:
+
+      - type: bind
+        source: ./nginx/.htpasswd
+        target: /etc/nginx/.htpasswd
+        read_only: true
+
       - type: bind
         source: ./volumes/media
         target: /volumes/media

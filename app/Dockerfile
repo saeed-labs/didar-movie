@@ -1,7 +1,7 @@
 FROM python:3.14.6
 
 RUN apt update -y
-RUN  apt install libpq-dev python3-dev build-essential gettext  -y
+RUN apt install libpq-dev python3-dev build-essential gettext  -y
 
 WORKDIR /app
 

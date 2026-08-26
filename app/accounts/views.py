@@ -79,7 +79,7 @@ class LoginUserView(APIView):
                 {
                     "message": "کد تایید ارسال نشد."
                 },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                status=status.HTTP_400_BAD_REQUEST
             )
 
 

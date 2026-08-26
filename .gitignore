@@ -12,6 +12,7 @@ db.sqlite3-journal
 media
 assets
 static
+dbdata
 
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
@@ -136,6 +137,7 @@ celerybeat.pid
 
 # Environments
 .env
+.htpasswd
 .venv
 env/
 venv/

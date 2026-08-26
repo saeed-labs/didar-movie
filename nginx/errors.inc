@@ -1,3 +1,4 @@
+error_page 401 = /401.json;
 error_page 403 = /403.json;
 error_page 404 = /404.json;
 error_page 413 = /413.json;
@@ -6,6 +7,16 @@ error_page 429 = /429.json;
 error_page 503 = /503.json;
 
 
+
+location = /401.json {
+    internal;
+    default_type application/json;
+    return 401 '{
+        "error": "Forbidden",
+        "message": "برای دسترسی به این بخش نیاز به احراز هویت دارید. لطفاً وارد حساب کاربری خود شوید.",
+        "statusCode": 401
+    }';
+}
 
 location = /403.json {
     internal;
