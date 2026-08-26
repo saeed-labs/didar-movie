@@ -10,11 +10,12 @@ DJANGO_APPS = [
 
 EXTERNAL_APPS = [
 
-
+    'drf_spectacular',
+    'drf_spectacular_sidecar',
 ]
 
-
 LOCAL_APPS = [
+    'accounts.apps.AccountsConfig',
 
 ]
 

@@ -38,8 +38,3 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}

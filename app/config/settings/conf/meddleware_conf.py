@@ -1,3 +1,5 @@
+
+
 DJANGO_MIDDLEWARE = [
 
     'django.middleware.security.SecurityMiddleware',
@@ -9,8 +11,10 @@ DJANGO_MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-LOCAL_MIDDLEWARE = [
 
+LOCAL_MIDDLEWARE = [
+    'middleware.erorr_status.JsonResponse404Middleware',
+    'middleware.erorr_status.JsonResponse403Middleware',
 ]
 
 MIDDLEWARE = DJANGO_MIDDLEWARE + LOCAL_MIDDLEWARE
