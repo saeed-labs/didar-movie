@@ -1,0 +1,45 @@
+from django.db import models
+from categories.models import ActorsModel, DirectorModel, GenreModel
+
+
+class MoviesModel(models.Model):
+    title = models.CharField(max_length=100, unique=True, verbose_name='عنوان فیلم')
+    slug = models.SlugField(unique=True, verbose_name='اسلاگ')
+    image = models.ImageField(upload_to='movies/%Y/%m', verbose_name='تصویر')
+    description = models.TextField(verbose_name='توضیحات')
+    short_description = models.TextField(verbose_name='توضیحات کوتاه')
+    genres = models.ManyToManyField(GenreModel, related_name='genres', verbose_name='ژانرها')
+    actors = models.ManyToManyField(ActorsModel, related_name='actors', verbose_name=' بازیگران')
+    directors = models.ManyToManyField(DirectorModel, related_name='directors', verbose_name='کارگردان')
+    is_active = models.BooleanField(default=True, verbose_name='فعال')
+    is_featured = models.BooleanField(default=False, verbose_name='ویژه')
+    Release_date = models.DateField(verbose_name='تاریخ انتشار')
+    created_on = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+    updated_on = models.DateTimeField(auto_now=True, verbose_name='تاریخ به‌روزرسانی')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-created_on']
+        verbose_name = 'فیلم و سریال'
+        verbose_name_plural = 'فیلم و سریال ها'
+
+
+
+
+
+class MovieVideoModel(models.Model):
+    movie = models.ForeignKey(MoviesModel, on_delete=models.CASCADE, related_name='movie_videos')
+    file = models.FileField(upload_to='movies/%Y/%m')
+    is_trailer = models.BooleanField(default=False, )
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'ویدیوی فیلم'
+        verbose_name_plural = 'ویدیوهای فیلم'
+        ordering = ['-created_on']
+
+    def __str__(self):
+        return self.movie.title

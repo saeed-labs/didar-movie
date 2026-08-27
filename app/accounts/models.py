@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.utils import timezone
-
+from movies.models import MoviesModel
 from .manager import UserManager
 
 
@@ -13,6 +13,8 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True, verbose_name='فعال')
     is_admin = models.BooleanField(default=False, verbose_name='مدیر')
     is_superuser = models.BooleanField(default=False, verbose_name='سوپر یوزر')
+    purchased_movies = models.ManyToManyField(MoviesModel, related_name='buyers', verbose_name='خریداری شده', blank=True)
+    watchlist = models.ManyToManyField(MoviesModel, related_name='watchlisted_by', blank=True, verbose_name='فیلم‌های ذخیره‌شده')
 
     objects = UserManager()
 

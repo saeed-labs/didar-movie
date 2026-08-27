@@ -16,6 +16,8 @@ EXTERNAL_APPS = [
 
 LOCAL_APPS = [
     'accounts.apps.AccountsConfig',
+    'movies.apps.MoviesConfig',
+    'categories.apps.CategoriesConfig',
 
 ]
 

@@ -25,6 +25,8 @@ class UserAdmin(BaseUserAdmin):
         (None, {"fields": ["email", "password"]}),
         ("اطلاعات شخصی", {"fields": ["username", "full_name", "phone"]}),
         ("مجوزها", {"fields": ["is_admin", "is_superuser", 'is_active']}),
+        ("فیلم‌ها", {"fields": ["purchased_movies", "watchlist"]}),
+
     ]
 
     add_fieldsets = [
@@ -38,7 +40,7 @@ class UserAdmin(BaseUserAdmin):
     ]
     search_fields = ["email"]
     ordering = ["email"]
-    filter_horizontal = []
+    filter_horizontal = ['purchased_movies', 'watchlist']
 
     inlines = [
         UserProfileInline,
