@@ -5,12 +5,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from .serializers import UserSerializer, LoginSerializer, OTPTimeSerializer, VerifyOTPSerializer, RegisterSerializer, VerifyResetOTPSerializer
-
 from .models import User, UserProfile, UserOTPModel, RegisterUserOTPModel
 from utils.send_email import send_login_otp_email, send_register_otp_email
 
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 
 class UserView(APIView):
     def get(self, request, *args, **kwargs):
@@ -21,6 +20,7 @@ class UserView(APIView):
 
 class LoginUserView(APIView):
     serializer_class = LoginSerializer
+    throttle_classes = [AnonRateThrottle,]
 
     def post(self, request, *args, **kwargs):
 
@@ -85,6 +85,7 @@ class LoginUserView(APIView):
 
 class VerifyUserOTPView(APIView):
     serializer_class = VerifyOTPSerializer
+    throttle_classes = [AnonRateThrottle, ]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -121,6 +122,7 @@ class VerifyUserOTPView(APIView):
 
 class RegisterUserView(APIView):
     serializer_class = RegisterSerializer
+    throttle_classes = [AnonRateThrottle, ]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -151,6 +153,7 @@ class RegisterUserView(APIView):
 
 class VeryfyRegisterUserOTPView(APIView):
     serializer_class = VerifyResetOTPSerializer
+    throttle_classes = [AnonRateThrottle, ]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)

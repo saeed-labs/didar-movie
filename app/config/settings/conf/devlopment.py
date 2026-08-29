@@ -1,4 +1,8 @@
 from .paths import BASE_DIR
+from .production import SECRET_KEY
+from datetime import timedelta
+
+
 
 STATIC_URL = "/assets/static/"
 STATIC_ROOT = BASE_DIR.parent / "volumes" / "assets" / "static/"
@@ -17,7 +21,15 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
-
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=180),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',)
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
@@ -32,8 +44,19 @@ REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    # 'DEFAULT_THROTTLE_CLASSES': [
+    #     'rest_framework.throttling.AnonRateThrottle',
+    #     'rest_framework.throttling.UserRateThrottle'
+    # ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/hour',
+        'user': '20/minute',
+    }
+
 }
+
+
 
 #
 #
