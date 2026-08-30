@@ -13,7 +13,8 @@ class MoviesModel(models.Model):
     directors = models.ManyToManyField(DirectorModel, related_name='directors', verbose_name='کارگردان')
     is_active = models.BooleanField(default=True, verbose_name='فعال')
     is_featured = models.BooleanField(default=False, verbose_name='ویژه')
-    Release_date = models.DateField(verbose_name='تاریخ انتشار')
+    release_date = models.DateField(verbose_name='تاریخ انتشار')
+    price = models.PositiveBigIntegerField(default=0,verbose_name='قیمت خرید',)
     created_on = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated_on = models.DateTimeField(auto_now=True, verbose_name='تاریخ به‌روزرسانی')
 

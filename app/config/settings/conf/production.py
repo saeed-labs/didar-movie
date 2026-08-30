@@ -52,3 +52,7 @@ DEFAULT_FROM_EMAIL = os.environ.get('DJANGO_DEFAULT_FROM_EMAIL')
 
 
 AUTH_USER_MODEL = "accounts.User"
+
+
+ZARINPAL_MERCHANT_ID = os.getenv("ZARINPAL_MERCHANT_ID")
+ZARINPAL_SANDBOX = os.getenv("ZARINPAL_SANDBOX", "True").lower() == "true"
