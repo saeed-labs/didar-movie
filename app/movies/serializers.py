@@ -32,7 +32,7 @@ class MoviesListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MoviesModel
-        fields = ['id', 'title','image', 'slug', 'short_description', 'Release_date',]
+        fields = ['id', 'title','image', 'slug', 'short_description', 'release_date',]
 
     def get_image(self, obj):
         if not obj.image:
@@ -56,7 +56,7 @@ class MoviesDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MoviesModel
-        fields = ['id', 'title', 'slug', 'image', 'description', 'short_description', 'Release_date', 'is_featured',
+        fields = ['id', 'title', 'slug', 'image', 'description', 'short_description', 'release_date', 'is_featured',
                   'movie_videos', 'genres', 'actors', 'directors', ]
 
 

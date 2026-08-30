@@ -12,12 +12,15 @@ EXTERNAL_APPS = [
 
     'drf_spectacular',
     'drf_spectacular_sidecar',
+    'django_filters',
 ]
 
 LOCAL_APPS = [
     'accounts.apps.AccountsConfig',
     'movies.apps.MoviesConfig',
     'categories.apps.CategoriesConfig',
+    'cart.apps.CartConfig',
+    'payment.apps.PaymentConfig',
 
 ]
 

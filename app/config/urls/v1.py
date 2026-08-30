@@ -8,6 +8,10 @@ urlpatterns = [
     path('user/', include('accounts.urls')),
     path('movie/', include('movies.urls')),
     path('categories/', include('categories.urls')),
+    path('cart/', include('cart.urls')),
+    path('payment/', include('payment.urls')),
+
+
 
 ]
 

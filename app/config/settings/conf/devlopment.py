@@ -15,10 +15,7 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API دیدار',
     'VERSION': '0.0.1',
     'SERVE_INCLUDE_SCHEMA': False,
-    # 'SWAGGER_UI_DIST': 'دیدار موی',
-    # 'SWAGGER_UI_FAVICON_HREF': 'API دیدار',
-    # 'REDOC_DIST': 'دیدار موی',
-    # OTHER SETTINGS
+    'COMPONENT_SPLIT_REQUEST': True
 }
 
 SIMPLE_JWT = {
