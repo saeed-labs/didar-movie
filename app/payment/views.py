@@ -122,7 +122,6 @@ class ZarinpalCallbackAPIView(APIView):
 
         authority = request.GET.get("Authority")
         status_value = request.GET.get("Status")
-        payment = get_object_or_404(Payment, authority=authority)
 
         if not authority:
             return Response(
@@ -131,12 +130,15 @@ class ZarinpalCallbackAPIView(APIView):
             )
 
         if status_value != "OK":
-            payment.status = Payment.Status.FAILED
-            payment.save(update_fields=["status"])
             return Response(
                 {"detail": "پرداخت توسط کاربر لغو یا ناموفق شد."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        payment = get_object_or_404(
+            Payment,
+            authority=authority,
+        )
 
         if payment.status == Payment.Status.SUCCESS:
             return Response(
@@ -159,7 +161,6 @@ class ZarinpalCallbackAPIView(APIView):
         if code not in [100, 101]:
             payment.status = Payment.Status.FAILED
             payment.save(update_fields=["status"])
-
 
             return Response(
                 {
