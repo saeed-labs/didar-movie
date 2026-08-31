@@ -51,5 +51,8 @@ class MoviesDetailView(APIView):
             MoviesModel.objects.filter(is_active=True).prefetch_related('movie_videos', 'genres__parent', 'actors',
                                                                         'directors', ), slug=slug, id=pk )
 
+        movie.most_viewed += 1
+        movie.save(update_fields=['most_viewed'])
+
         serializer = self.serializer_class(movie, context={'request': request})
         return Response(serializer.data)

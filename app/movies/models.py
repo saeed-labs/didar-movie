@@ -3,8 +3,8 @@ from categories.models import ActorsModel, DirectorModel, GenreModel
 
 
 class MoviesModel(models.Model):
-    title = models.CharField(max_length=100, unique=True, verbose_name='عنوان فیلم')
-    slug = models.SlugField(unique=True, verbose_name='اسلاگ')
+    title = models.CharField(max_length=100, unique=True, db_index=True, verbose_name='عنوان فیلم')
+    slug = models.SlugField(unique=True, db_index=True, verbose_name='اسلاگ')
     image = models.ImageField(upload_to='movies/%Y/%m', verbose_name='تصویر')
     description = models.TextField(verbose_name='توضیحات')
     short_description = models.TextField(verbose_name='توضیحات کوتاه')
@@ -14,9 +14,13 @@ class MoviesModel(models.Model):
     is_active = models.BooleanField(default=True, verbose_name='فعال')
     is_featured = models.BooleanField(default=False, verbose_name='ویژه')
     release_date = models.DateField(verbose_name='تاریخ انتشار')
-    price = models.PositiveBigIntegerField(default=0,verbose_name='قیمت خرید',)
+    price = models.PositiveBigIntegerField(default=0,verbose_name='قیمت خرید', help_text='براساس تومان')
+    most_viewed = models.PositiveIntegerField(default=0, verbose_name='پربازدید', db_index=True)
+    beloved = models.PositiveIntegerField(default=0, verbose_name='محبوب', db_index=True)
+
     created_on = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated_on = models.DateTimeField(auto_now=True, verbose_name='تاریخ به‌روزرسانی')
+
 
     def __str__(self):
         return self.title
@@ -25,6 +29,8 @@ class MoviesModel(models.Model):
         ordering = ['-created_on']
         verbose_name = 'فیلم و سریال'
         verbose_name_plural = 'فیلم و سریال ها'
+
+
 
 
 
