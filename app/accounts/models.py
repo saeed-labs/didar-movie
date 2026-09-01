@@ -5,6 +5,7 @@ from movies.models import MoviesModel
 from .manager import UserManager
 
 
+
 class User(AbstractBaseUser):
     email = models.EmailField(verbose_name="ایمیل", max_length=255, unique=True,)
     username = models.CharField(max_length=255, unique=True, verbose_name="نام کاربری")
@@ -13,8 +14,6 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True, verbose_name='فعال')
     is_admin = models.BooleanField(default=False, verbose_name='مدیر')
     is_superuser = models.BooleanField(default=False, verbose_name='سوپر یوزر')
-    purchased_movies = models.ManyToManyField(MoviesModel, related_name='buyers', verbose_name='خریداری شده', blank=True)
-    watchlist = models.ManyToManyField(MoviesModel, related_name='watchlisted_by', blank=True, verbose_name='فیلم‌های ذخیره‌شده')
 
     objects = UserManager()
 
@@ -47,7 +46,18 @@ class UserProfile(models.Model):
     is_verified = models.BooleanField(default=False, verbose_name='تایید شده')
     is_banned = models.BooleanField(default=False, verbose_name='مسدود شده')
     is_special = models.BooleanField(default=False, verbose_name='ویژه')
-    # purchased_product = models.ManyToManyField(Product, blank=True)
+    special_expires_at = models.DateTimeField(null=True, blank=True, verbose_name='تاریخ انقضای ویژه')
+
+    @property
+    def special_is_active(self):
+        if not self.is_special:
+            return False
+
+        if not self.special_expires_at:
+            return False
+
+        return timezone.now() < self.special_expires_at
+
 
     def __str__(self):
         return self.user.username
@@ -57,6 +67,38 @@ class UserProfile(models.Model):
         verbose_name_plural = 'پروفایل کاربران'
 
 
+class MovieOwnership(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='movie_ownerships')
+    movie = models.ForeignKey(MoviesModel, on_delete=models.PROTECT, related_name='owners')
+    payment = models.ForeignKey('payment.Payment', on_delete=models.PROTECT, related_name='ownerships')
+    price = models.PositiveBigIntegerField()
+    purchased_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'movie'],
+                name='unique_user_movie_ownership',
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.user} - {self.movie}'
+
+
+class SubscriptionPlan(models.Model):
+    name = models.CharField(max_length=100,verbose_name='نام اشتراک')
+    duration_days = models.PositiveIntegerField(verbose_name='مدت اشتراک')
+    price = models.PositiveBigIntegerField(verbose_name='قیمت')
+    is_active = models.BooleanField(default=True,verbose_name='فعال')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'پلن اشتراک'
+        verbose_name_plural = 'پلن‌های اشتراک'
 
 class UserOTPModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='otp')

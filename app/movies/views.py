@@ -2,6 +2,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from accounts.models import MovieOwnership
+from rest_framework.permissions import IsAuthenticated
+
+from permissions.movie_owner import CanAccessMovie
 from .models import MoviesModel
 from .serializers import MoviesListSerializer, MoviesDetailSerializer
 from utils.customPagination import CustomPagination
@@ -45,12 +49,14 @@ class MoviesListView(APIView):
 
 class MoviesDetailView(APIView):
     serializer_class = MoviesDetailSerializer
+    permission_classes = [IsAuthenticated, CanAccessMovie]
 
     def get(self, request, slug, pk,):
         movie = get_object_or_404(
             MoviesModel.objects.filter(is_active=True).prefetch_related('movie_videos', 'genres__parent', 'actors',
                                                                         'directors', ), slug=slug, id=pk )
 
+        self.check_object_permissions(request, movie)
         movie.most_viewed += 1
         movie.save(update_fields=['most_viewed'])
 

@@ -2,10 +2,12 @@ from django.conf import settings
 from django.db import models
 
 from movies.models import MoviesModel
+from payment.models import Coupon
 
 
 class Cart(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='cart',verbose_name='کاربر', )
+    coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True, related_name='carts', verbose_name='کد تخفیف')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد', )
     updated_at = models.DateTimeField(auto_now=True, verbose_name='آخرین بروزرسانی', )
 

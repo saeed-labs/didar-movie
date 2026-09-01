@@ -67,7 +67,8 @@ class ZarinpalGateway:
         response = requests.post(
             f"{self.api_url}/verify.json",
             json=data,
-            headers={"Content-Type": "application/json"}, timeout=15
+            headers={"Content-Type": "application/json"},
+            timeout=15
         )
 
         response.raise_for_status()

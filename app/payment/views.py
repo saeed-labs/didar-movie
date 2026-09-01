@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,7 +13,9 @@ from cart.models import Cart
 from utils.gateways.zarinpal import ZarinpalGateway
 from utils.gateways.services import complete_payment
 
-from .models import Payment, PaymentItem, MovieOwnership
+from .models import Payment, PaymentItem
+from accounts.models import MovieOwnership, SubscriptionPlan
+from .serializers import SubscriptionPlanSerializer
 
 
 class PaymentRequestAPIView(APIView):
@@ -55,11 +58,27 @@ class PaymentRequestAPIView(APIView):
             )
 
         total_price = sum(item.movie.price for item in cart_items)
+        discount_amount = 0
+
+        coupon = cart.coupon
+
+        if coupon:
+            if not coupon.is_valid:
+                return Response(
+                    {"detail": "کد تخفیف معتبر نیست."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            discount_amount = (total_price * coupon.discount) // 100
+
+        final_price = total_price - discount_amount
 
         payment = Payment.objects.create(
             user=request.user,
-            amount=total_price,
+            amount=final_price,
             status=Payment.Status.PENDING,
+            coupon=coupon,
+            discount_amount=discount_amount,
         )
 
         PaymentItem.objects.bulk_create([
@@ -183,3 +202,80 @@ class ZarinpalCallbackAPIView(APIView):
             }
         )
 
+
+class SubscriptionPlanListAPIView(ListAPIView):
+    serializer_class = SubscriptionPlanSerializer
+
+    def get_queryset(self):
+        return SubscriptionPlan.objects.filter(
+            is_active=True
+        ).order_by("duration_days")
+
+class SubscriptionPaymentRequestAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request, pk):
+
+        plan = get_object_or_404(
+            SubscriptionPlan,
+            pk=pk,
+            is_active=True,
+        )
+
+        payment = Payment.objects.create(
+            user=request.user,
+            subscription_plan=plan,
+            amount=plan.price,
+            status=Payment.Status.PENDING,
+        )
+
+        callback_url = request.build_absolute_uri(
+            reverse("payments:zarinpal-callback")
+        )
+
+        gateway = ZarinpalGateway()
+
+        result = gateway.request_payment(
+            amount=payment.amount,
+            description=f"خرید اشتراک {plan.name} - Payment #{payment.id}",
+            callback_url=callback_url,
+            mobile=request.user.phone,
+            email=request.user.email,
+        )
+
+        data = result.get("data", {})
+
+        if data.get("code") != 100:
+
+            payment.status = Payment.Status.FAILED
+            payment.save(update_fields=["status"])
+
+            return Response(
+                {
+                    "detail": "ایجاد پرداخت در زرین‌پال ناموفق بود.",
+                    "code": data.get("code"),
+                    "message": data.get("message"),
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        authority = data["authority"]
+
+        payment.authority = authority
+
+        payment.save(
+            update_fields=["authority"]
+        )
+
+        return Response(
+            {
+                "payment_id": payment.id,
+                "plan": plan.name,
+                "duration_days": plan.duration_days,
+                "amount": payment.amount,
+                "authority": authority,
+                "payment_url": gateway.get_payment_url(authority),
+            },
+            status=status.HTTP_201_CREATED,
+        )

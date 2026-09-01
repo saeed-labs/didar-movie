@@ -186,3 +186,6 @@ class VeryfyRegisterUserOTPView(APIView):
         UserProfile.objects.create(user=user)
         otp.delete()  # حذف کد تایید بعد از استفاده
         return Response({"message": "ثبت نام موفق بود", "user": RegisterSerializer(user).data}, status=201)
+
+
+

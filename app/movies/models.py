@@ -15,11 +15,23 @@ class MoviesModel(models.Model):
     is_featured = models.BooleanField(default=False, verbose_name='ویژه')
     release_date = models.DateField(verbose_name='تاریخ انتشار')
     price = models.PositiveBigIntegerField(default=0,verbose_name='قیمت خرید', help_text='براساس تومان')
+    # discount = models.PositiveSmallIntegerField(default=0, verbose_name='تخفیف')
     most_viewed = models.PositiveIntegerField(default=0, verbose_name='پربازدید', db_index=True)
     beloved = models.PositiveIntegerField(default=0, verbose_name='محبوب', db_index=True)
+    is_double = models.BooleanField(default=False, verbose_name='دوبله')
+
+
 
     created_on = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     updated_on = models.DateTimeField(auto_now=True, verbose_name='تاریخ به‌روزرسانی')
+    #
+    # @property
+    # def final_price(self):
+    #     if self.discount > 0:
+    #         return self.price - (self.price * self.discount // 100)
+    #
+    #     return self.price
+
 
 
     def __str__(self):

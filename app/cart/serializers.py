@@ -18,3 +18,9 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 class AddCartItemSerializer(serializers.Serializer):
     movie_id = serializers.IntegerField()
+
+
+
+
+class ApplyCouponSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=50)
