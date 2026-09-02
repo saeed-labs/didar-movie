@@ -880,8 +880,8 @@ If you intend to make the project open source, add an appropriate `LICENSE` file
 
 GitHub:
 
-https://github.com/saeed-labs
+[https://github.com/saeidjeddi](https://github.com/saeidjeddi)
 
 Repository:
 
-https://github.com/saeed-labs/didar-movie-backend
+[https://github.com/saeidjeddi/didar-movie-backend](https://github.com/saeidjeddi/didar-movie-backend)
